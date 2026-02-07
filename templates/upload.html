@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Attendance - Teacher Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <span class="icon">📚</span>
+            <span>Teacher Portal</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('manage_students') }}" class="nav-link">Manage Students</a>
+            <a href="{{ url_for('upload_file') }}" class="nav-link active">Upload</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Upload Attendance File</h1>
+        <p class="subtitle">Upload an Excel file containing student attendance data</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="upload-card">
+        <div class="upload-icon">📤</div>
+        <h2>Select Excel File</h2>
+        <p class="upload-info">Please ensure your Excel file contains the following columns:</p>
+        
+        <div class="columns-list">
+            <div class="column-item">
+                <span class="column-name">Name</span>
+                <span class="column-desc">Student's full name</span>
+            </div>
+            <div class="column-item">
+                <span class="column-name">Attended</span>
+                <span class="column-desc">Number of classes attended</span>
+            </div>
+            <div class="column-item">
+                <span class="column-name">Total Classes</span>
+                <span class="column-desc">Total number of classes</span>
+            </div>
+            <div class="column-item">
+                <span class="column-name">ParentMobile</span>
+                <span class="column-desc">Parent's 10-digit mobile number</span>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            <div class="file-input-wrapper">
+                <input type="file" name="file" id="file" accept=".xlsx,.xls" required>
+                <label for="file" class="file-label">
+                    <span class="file-icon">📁</span>
+                    <span class="file-text">Choose Excel File</span>
+                    <span class="file-name" id="fileName">No file chosen</span>
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <span>Upload File</span>
+                <span class="btn-icon">→</span>
+            </button>
+        </form>
+
+        <div class="help-text">
+            <p><strong>Note:</strong> The file will replace the existing attendance database.</p>
+            <p>Supported formats: .xlsx, .xls (Maximum size: 16MB)</p>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
+

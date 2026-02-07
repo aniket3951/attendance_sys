@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student - Teacher Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <span class="icon">📚</span>
+            <span>Teacher Portal</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('manage_students') }}" class="nav-link">Manage Students</a>
+            <a href="{{ url_for('upload_file') }}" class="nav-link">Upload</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Edit Student</h1>
+        <p class="subtitle">Update student attendance information</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="form-container">
+        <form method="POST" class="student-form">
+            <div class="form-group">
+                <label for="name">Student Name *</label>
+                <input type="text" id="name" name="name" value="{{ student.name }}" required placeholder="Enter full name">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="attended">Classes Attended *</label>
+                    <input type="number" id="attended" name="attended" min="0" value="{{ student.attended }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="total_classes">Total Classes *</label>
+                    <input type="number" id="total_classes" name="total_classes" min="0" value="{{ student.total_classes }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="parent_mobile">Parent Mobile Number *</label>
+                <input type="tel" id="parent_mobile" name="parent_mobile" pattern="[0-9]{10}" maxlength="10" value="{{ student.parent_mobile }}" required placeholder="10-digit mobile number">
+                <small>Enter 10-digit mobile number without country code</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span>💾</span> Update Student
+                </button>
+                <a href="{{ url_for('manage_students') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+

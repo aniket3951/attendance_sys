@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students - Teacher Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <span class="icon">📚</span>
+            <span>Teacher Portal</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('manage_students') }}" class="nav-link active">Manage Students</a>
+            <a href="{{ url_for('upload_file') }}" class="nav-link">Upload</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Manage Students</h1>
+        <p class="subtitle">Add, edit, or remove student records</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="table-container">
+        <div class="table-header">
+            <h2>All Students</h2>
+            <a href="{{ url_for('add_student') }}" class="btn btn-primary">
+                <span>➕</span> Add New Student
+            </a>
+        </div>
+
+        {% if students %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Student Name</th>
+                    <th>Attended</th>
+                    <th>Total Classes</th>
+                    <th>Attendance %</th>
+                    <th>Status</th>
+                    <th>Parent Mobile</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td class="row-number">{{ loop.index }}</td>
+                    <td class="student-name">{{ s.name }}</td>
+                    <td>{{ s.attended }}</td>
+                    <td>{{ s.total_classes }}</td>
+                    <td>
+                        <div class="percentage-container">
+                            <span class="percentage-value">{{ s.percentage }}%</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ s.percentage }}%; background-color: {% if s.percentage >= 75 %}#28a745{% else %}#dc3545{% endif %};"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge {{ s.status.replace(' ', '') }}">{{ s.status }}</span>
+                    </td>
+                    <td>{{ s.parent_mobile }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('edit_student', student_id=s.id) }}" class="btn btn-edit" title="Edit">✏️</a>
+                            {% if s.status == "Not Eligible" %}
+                                <a href="{{ url_for('notify_parent', student_id=s.id) }}" target="_blank" class="btn btn-whatsapp" title="Send WhatsApp">📱</a>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('delete_student', student_id=s.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete {{ s.name }}?');">
+                                <button type="submit" class="btn btn-delete" title="Delete">🗑️</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+            <div class="no-data-icon">👥</div>
+            <h3>No Students Found</h3>
+            <p>Start by adding your first student.</p>
+            <a href="{{ url_for('add_student') }}" class="btn btn-primary">Add Student</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
